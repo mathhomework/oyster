@@ -1,0 +1,140 @@
+.grid-container{
+    width: 100%;
+    max-width: 1200px;
+}
+
+/*-- our cleafix hack -- */
+.row:before,
+.row:after {
+    content:"";
+    display: table ;
+    clear:both;
+}
+
+[class$='-1']{
+    width: 8.33333333333%;
+}
+[class$='-2']{
+    width: 16.6666666667%;
+}
+[class$="-3"]{
+    width: 25%;
+}
+
+
+[class$='-4']{
+    width: 33.3333333333%;
+}
+[class$='-5']{
+    width: 41.6666666667%;
+}
+[class$="-6"]{
+    width: 50%;
+}
+
+[class$='-7']{
+    width: 58.3333333333%;
+}
+
+[class$='-8']{
+    width: 66.666666666%;
+}
+
+[class$='-9']{
+    width: 75%;
+}
+
+
+[class$='-12']{
+    width: 100%;
+}
+html{
+    font-size: 16px;
+}
+body{
+    margin: 0;
+    box-sizing:border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+#nav-bar{
+    background-color:yellow;
+    /*this is necessary because inline-block is used in the child elements*/
+    /*however, you must specify font-size in the child elements*/
+    font-size: 0;
+
+}
+
+#nav-bar a, #nav-bar form, #nav-bar input, #nav-bar span{
+    display:inline-block;
+    font-size:12px;
+    text-decoration:none;
+}
+
+#nav-bar input{
+    line-height: 14px;
+    margin-top:1em;
+}
+
+#nav-bar #logo{
+    font-size:24px;
+    font-weight:700;
+    font-style:italic;
+    text-align:center;
+}
+
+label{
+    margin-right:10px;
+}
+
+#subject-card{
+    background-color:#ccc;
+    width:100%;
+    box-sizing:border-box;
+    margin: 0 auto;
+}
+
+.subject-item{
+        float:left;
+
+}
+#subject-card-details{
+}
+
+#subject-card-title{
+    text-align:center;
+    font-size:65px;
+    float:left;
+    margin:0;
+}
+
+.review-stars{
+    font-size:40px;
+    font-weight:700;
+
+}
+
+.review-card{
+    /*border:1px red solid;*/
+    background-color: #eee;
+    max-width:30%;
+    min-width:20%;
+    box-sizing:border-box;
+    display:inline-block;
+    padding-right:13px;
+    padding-left:13px;
+    margin-left:.25em;
+    margin-bottom:.25em;
+}
+
+.review-card-text{
+    font-family: Georgia, Arial, sans-serif;
+
+}
+
+.review-holder{
+    text-align:center;
+
+}

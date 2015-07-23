@@ -1,0 +1,38 @@
+{% extends "base_template.html" %}
+{% block content %}
+<div ng-controller="subjectController">
+    <div id="subject-card" class="subject-item -12">
+
+        <h1 id="subject-card-title" class="subject-item -4">{{ subject }}</h1>
+        <div id="subject-card-details" class="subject-item -8">
+            <p>S: {{ subject.cumulative_score }}</p>
+            <p>Votes: {{ subject_votes }}
+                <span ng-click="voteUp()" >
+                    <span ng-bind="word"></span>
+                </span>
+            </p>
+            <span> {{ reviews_count }} reviews</span>
+        </div>
+    </div>
+    <div class="review-holder">
+    {% for review in reviews %}
+        <div class="review-card">
+            <h3>{{ review.title }}</h3>
+                <div class="review-stars">{{ review.get_rating_display }}</div>
+            <p>Written by: {{ review.author }}</p>
+            <p class="review-card-text">{{ review.review }}</p>
+        </div>
+    {% endfor %}
+    </div>
+
+    {% if request.user.is_authenticated %}
+        <form method="POST" action=".">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Submit!">
+        </form>
+    {% endif %}
+    <p ng-click="work()">yo</p>
+    <p ng-model="word">{{word}}</p>
+</div>
+{% endblock %}
