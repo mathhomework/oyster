@@ -1,0 +1,49 @@
+/**{*/
+    /*box-sizing: border-box;*/
+/*}*/
+/*body{*/
+    /*margin: 0;*/
+    /*padding: 0;*/
+    /*border: 0;*/
+/*}*/
+
+/*.navbar{*/
+    /*background:red;*/
+    /*width: 100%;*/
+/*}*/
+/*.navbar #logo{*/
+    /*background:yellow;*/
+    /*display: inline-block;*/
+    /*text-decoration: none;*/
+/*}*/
+
+/*.navbar-wrapper{*/
+    /*width: 980px;*/
+    /*margin: 0 auto;*/
+    /*position relative in this wrapper is what keeps the right items from going all the way to the very right*/
+    /*position: relative;*/
+    /*padding: 10px 0;*/
+/*}*/
+/*.right-items{*/
+    /*position: absolute;*/
+    /*right: 0;*/
+    /*top: 26%;*/
+/*}*/
+
+/*.right-items form, .right-items a, .right-items .form-wrapper{*/
+    /*display: inline-block;*/
+    /*vertical-align: middle;*/
+/*}*/
+
+
+
+/*.form-wrapper form{*/
+    /*position:absolute;*/
+    /*right: 500px;*/
+/*}*/
+
+/*.form-wrapper label{*/
+    /*position:absolute;*/
+    /*right: 200px;*/
+/*}*/
+

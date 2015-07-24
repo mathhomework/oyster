@@ -1,28 +1,41 @@
 {% load staticfiles %}
 <html ng-app="mainApp">
 <head>
+    {% block head %}{% endblock %}
     <script src="{% static "js/angular.min.js" %}"></script>
     <script src="{% static "js/app.js" %}"></script>
     <script src="{% static "js/subjectController.js" %}"></script>
-    <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}">
     <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>
+    <link href="{% static 'css/main.css' %}" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div id="nav-bar">
-        <a class="-2" id="logo" href={% url 'home' %}>oyster</a>
-        <span class="-7">
-            <form>
-                <label>Search</label><input type="text">
-            </form>
-        </span>
-        <span class="-3">
-            {% if user.is_authenticated %}
-                {{ request.user.username }} <a href={% url 'profile' %}>Profile</a> | <a href={% url 'logout' %}>Logout</a>
-            {% else %}
-                <a href={% url 'register' %}>Register</a> | <a href={% url 'login' %}>Log In</a>
-            {% endif %}
-        </span>
-    </div>
+    <nav class="navbar navbar-inverse">
+{#        <div class="navbar-wrapper">#}
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href={% url 'home' %}>oyster</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <form class="navbar-form navbar-left">
+                        <div class="form-group">
+                        <input class="form-control" placeholder="Search" type="text">
+                        </div>
+                    </form>
+                    <ul class="nav navbar-nav navbar-right">
+                    <li><a>'NEW' POSTS</a></li>
+                    <li><a>'TOP' POSTS</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a>{{ request.user.username }}</a></li> <li><a href={% url 'profile' %}>Profile</a></li><li><a href={% url 'logout' %}>Logout</a></li>
+                    {% else %}
+                        <li><a href={% url 'register' %}>Register</a></li><li><a href={% url 'login' %}>Log In</a></li>
+                    {% endif %}
+                    </ul>
+                </div>
+            </div>
+{#        </div>#}
+    </nav>
 
 
     {% block content %}{% endblock content %}
