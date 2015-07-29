@@ -15,10 +15,10 @@
     <p ng-click="setNewReviews()">New Posts</p>
     <div class="row">
     {% verbatim %}
-    <div ng-repeat="x in (filteredSubjects = (allSubjects | limitTo:4))">
+    <div ng-repeat="subject in (filteredSubjects = (allSubjects | limitTo:4))">
 
         <div class="col-md-2 subject-card">
-            {{ x.name }}
+            {{ subject.name }}
             4.92/5.0
             293 Votes
             542 Reviews
@@ -29,8 +29,14 @@
         <div class="col-md-8">
             <div class="scroll-container">
                 <div class="scroll-inner">
-                    <div  ng-repeat="review in x.reviews" class="scroll-review">
-                        {{ review.review }}
+                    <div ng-repeat="review in subject.reviews" class="scroll-review">
+                        <h4>{{ review.title }}</h4>
+
+                        <h5>
+                            <a href="#">{{ review.author[0].username }}</a>
+                        </h5>
+
+                        <p>{{ review.review }}</p>
                     </div>
 
                 </div>

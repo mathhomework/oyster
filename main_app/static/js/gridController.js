@@ -56,7 +56,7 @@
 
         factory.getAllSubjects = function(){
             var deferred = $q.defer();
-            $http.get(url + "api/subjects/?created=True")
+            $http.get(url + "api/subjects/?on=True")
                 .then(function(result){
                     deferred.resolve(result);
                 })
@@ -151,25 +151,22 @@
         //        .then(function(allReviews)
         //}
         $scope.$watch('filteredSubjects', function() {
-
-            console.log("FILT CHANGED" + $scope.filteredSubjects);
             function getInitialReviews() {
-                if (Object.prototype.toString.call($scope.filteredSubjects) === '[object Array]') {
-                    //alert('Array!');
-
-                    for (var i = 0; i < $scope.filteredSubjects.length; i++) {
-                        (function(i) {
-                            console.log("LOOPING WITH I = " + i);
-                            gridFactory.getReviews("", $scope.filteredSubjects[i].id)
-                                .then(function (response) {
-                                    $scope.filteredSubjects[i].reviews = response.data;
-                                });
-                        })(i);
-                    }
-                    console.log(JSON.stringify($scope.filteredSubjects));
+                for (var i = 0; i < $scope.filteredSubjects.length; i++) {
+                    (function(i) {
+                        gridFactory.getReviews("", $scope.filteredSubjects[i].id)
+                            .then(function (response) {
+                                $scope.filteredSubjects[i].reviews = response.data;
+                            });
+                    })(i);
                 }
+                //console.log(JSON.stringify($scope.filteredSubjects));
             }
-            getInitialReviews();
+            if (Object.prototype.toString.call($scope.filteredSubjects) === '[object Array]') {
+                //alert('Array!');
+                getInitialReviews();
+            }
+
         }, true);
 
     };
