@@ -1,14 +1,16 @@
 {% load staticfiles %}
 <html ng-app="mainApp">
 <head>
-    {% block head %}{% endblock %}
-    <script src="{% static "js/angular.min.js" %}"></script>
-    <script src="{% static "js/app.js" %}"></script>
-    <script src="{% static "js/subjectController.js" %}"></script>
-    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>
-    <link href="{% static 'css/main.css' %}" type="text/css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    <script src="{% static 'js/ng-infinite-scroll.min.js' %}"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+    <script src="{% static 'js/subjectController.js' %}"></script>
+
+    <link href="{% static 'css/main.css' %}" type="text/css" rel="stylesheet">
+    {% block head %}{% endblock %}
 </head>
 <body>
     <nav class="navbar navbar-inverse">
@@ -32,10 +34,12 @@
                         <li><a href={% url 'register' %}>Register</a></li><li><a href={% url 'login' %}>Log In</a></li>
                     {% endif %}
                     </ul>
+
                 </div>
             </div>
 {#        </div>#}
     </nav>
+
 
 
     {% block content %}{% endblock content %}

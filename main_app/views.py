@@ -11,13 +11,13 @@ from main_app.models import Subject, Review, SubjectVote
 def home(request):
     subjects = Subject.objects.all()
     # return HttpResponse("This is some shit, {}".format(name))
-    return render(request, "home.html", {
+    return render(request, "grid.html", {
         'subjects': subjects
         })
 
 
 def you(request, name):
-    return render(request, "home.html", {'name': name})
+    return render(request, "grid.html", {'name': name})
 
 
 def register(request):

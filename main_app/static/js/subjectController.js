@@ -6,6 +6,7 @@
             $scope.word = "VOTEDUP";
 
         };
+        console.log("HERRO");
         $http.post("/api/subjectvotes/?format=json").success(function(data){
             console.log(data);
         });

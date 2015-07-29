@@ -47,3 +47,33 @@
     /*right: 200px;*/
 /*}*/
 
+.container{
+    margin-left: 0;
+    margin-right: 0;
+
+}
+
+.subject-card{
+    background: pink;
+}
+
+.scroll-container{
+    /*overflow: hidden;*/
+    overflow-y: hidden;
+    overflow-x: scroll;
+    height:200px;
+
+}
+
+.scroll-inner{
+    height:208px;
+    width: 4800px;
+
+
+
+}
+
+.scroll-review{
+    width: 500px;
+    float:left;
+}

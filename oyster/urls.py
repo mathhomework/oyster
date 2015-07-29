@@ -18,12 +18,13 @@ from django.contrib import admin
 
 
 from rest_framework import routers
-from main_app.api.views import AuthorViewSet, SubjectVoteViewSet
+from main_app.api.views import AuthorViewSet, SubjectVoteViewSet, ReviewViewSet
 
 
 router = routers.DefaultRouter()
 router.register(r'authors', AuthorViewSet)
 router.register(r'subjectvotes', SubjectVoteViewSet)
+router.register(r'reviews', ReviewViewSet)
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
