@@ -22,13 +22,16 @@
             return deferred.promise;
         };
 
-        factory.getReviews = function(query, subject_id){
+        factory.getReviews = function(subject_id, query){
             var deferred = $q.defer();
-            var subject_query = "";
-            if(subject_id != ""){
-                subject_query= "?subject=" + subject_id.toString();
+            var full_query = "";
+            if(typeof subject_id !== "undefined"){
+                full_query= "?subject=" + subject_id.toString();
             }
-            $http.get(url + "api/reviews/" + subject_query)
+            if(typeof query !== "undefined"){
+                full_query += query;
+            }
+            $http.get(url + "api/reviews/" + full_query)
                 .then(function(result) {
                     deferred.resolve(result);
                 })
@@ -89,7 +92,7 @@
                         // ngInfiniteScroll causes 1 scroll which I think adds to subjectLimit
                         for (var i = 0; i < $scope.subjectLimit; i++) {
                             (function(i) {
-                                gridFactory.getReviews("", $scope.allSubjects[i].id)
+                                gridFactory.getReviews($scope.allSubjects[i].id)
                                     .then(function (response) {
                                         $scope.allSubjects[i].reviews = response.data;
                                     });
@@ -112,6 +115,19 @@
         $scope.getCurrentSubjectId = function(id){
             $scope.currentSubjectId = id;
             console.log("curr_id " + id);
+            var query = "";
+            gridFactory.getReviews(id, query)
+                .then(function(response){
+                    for(var i = 0; i<$scope.filteredSubjects.length; i++){
+                        console.log('looping');
+                        if($scope.filteredSubjects[i].id == id){
+                            for(var j = 0; j<response.data.length; j++){
+                                $scope.filteredSubjects[i].reviews.push(response.data[j]);
+                            }
+                            break;
+                        }
+                    }
+                })
         };
         $scope.subjectOrder ='';
         populateAllSubjects();
@@ -132,7 +148,7 @@
                 // but the review is not loaded until you scroll one more click.
                 // i feel like it may be related to this function being triggered upon load one time
                 // which causes subjectLimit to automatically increase by 1.
-                gridFactory.getReviews("", $scope.filteredSubjects[$scope.subjectLimit-2].id)
+                gridFactory.getReviews($scope.filteredSubjects[$scope.subjectLimit-2].id)
                     .then(function(response){
                         $scope.filteredSubjects[$scope.subjectLimit-2].reviews = response.data;
                     });
@@ -180,7 +196,7 @@
         //    function getInitialReviews() {
         //        for (var i = 0; i < $scope.filteredSubjects.length; i++) {
         //            (function(i) {
-        //                gridFactory.getReviews("", $scope.filteredSubjects[i].id)
+        //                gridFactory.getReviews($scope.filteredSubjects[i].id )
         //                    .then(function (response) {
         //                        $scope.filteredSubjects[i].reviews = response.data;
         //                    });
