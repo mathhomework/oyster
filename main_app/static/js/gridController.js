@@ -75,23 +75,89 @@
 
 (function(){
 
-    var gridController = function($scope, $http, gridFactory){
+    var gridController = function($scope, $http, gridFactory, $filter){
         $scope.filteredSubjects = null;
-        console.log("gridController ONLINE");
         $scope.allSubjects = [];
+        var filteredSubjectsStart = 0;
         function populateAllSubjects(){
             gridFactory.getAllSubjects()
                 .then(function(subjects){
                     $scope.allSubjects = subjects.data;
                     console.log($scope.allSubjects);
-
+                    function getInitialReviews() {
+                        //note: right as page loads, I think
+                        // ngInfiniteScroll causes 1 scroll which I think adds to subjectLimit
+                        for (var i = 0; i < $scope.subjectLimit; i++) {
+                            (function(i) {
+                                gridFactory.getReviews("", $scope.allSubjects[i].id)
+                                    .then(function (response) {
+                                        $scope.allSubjects[i].reviews = response.data;
+                                    });
+                                filteredSubjectsStart = i;
+                            })(i);
+                        }
+                    }
+                    getInitialReviews();
+                        //$scope.filteredSubjects = $filter('limitTo')($scope.allSubjects, 'subjectLimit');
+                        //$scope.filteredSubjects = $filter('orderBy')($scope.filteredSubjects, 'subjectOrder');
                 },
                 (function(error){
                     console.log("populateAllSubjects Error:" + error);
                 })
             );
         }
+        $scope.subjectLimit = 4;
+        //since scroll is triggered once when the page loads, this will be +1,
+
+        $scope.getCurrentSubjectId = function(id){
+            $scope.currentSubjectId = id;
+            console.log("curr_id " + id);
+        };
+        $scope.subjectOrder ='';
         populateAllSubjects();
+
+        var first = true;
+        $scope.infiniteSubjects = function() {
+            if(first){
+                first = false;
+            }
+            else{
+                $scope.subjectLimit += 1;
+                //console.log("filteredss" + filteredSubjectsStart);
+                //console.log("ssL" + $scope.subjectLimit);
+                //subjectLimit-2 is used, which means that after the subject is loaded,
+                // you need to scroll one more click down to load it's review.. since it is actually
+                // loading the previous review to the newly gotten subject.
+                // the downside is that there is a tiny noticable moment where the subject is loaded
+                // but the review is not loaded until you scroll one more click.
+                // i feel like it may be related to this function being triggered upon load one time
+                // which causes subjectLimit to automatically increase by 1.
+                gridFactory.getReviews("", $scope.filteredSubjects[$scope.subjectLimit-2].id)
+                    .then(function(response){
+                        $scope.filteredSubjects[$scope.subjectLimit-2].reviews = response.data;
+                    });
+            }
+        };
+        $scope.setRatedSubjects = function(){
+            if($scope.subjectOrder == "cumulative_score"){
+                $scope.subjectOrder = "-cumulative_score";
+            }
+            else {
+                $scope.subjectOrder = "cumulative_score"
+            }
+        };
+
+        $scope.setVotedSubjects = function(){
+            console.log('setvotedsubjects');
+            if($scope.subjectOrder == "subject_votes_difference"){
+                $scope.subjectOrder = "-subject_votes_difference";
+            }
+            else {
+                $scope.subjectOrder = "subject_votes_difference"
+            }
+        };
+
+
 
 
         //$scope.query = "";
@@ -107,70 +173,38 @@
         //    .then(function(stuff){
         //        console.log(stuff.data);
         //    });
-        //$scope.oldReviews = true;
-        //$scope.newReviews = false;
-        //$scope.popularReviews = false;
-        //$scope.setOldReviews = function(){
-        //    $scope.oldReviews = true;
-        //    $scope.newReviews = false;
-        //    $scope.popularReviews = false;
-        //};
-        //$scope.setNewReviews = function(){
-        //    $scope.oldReviews = false;
-        //    $scope.newReviews = true;
-        //    $scope.popularReviews = false;
-        //    console.log("setNewReviews triggered");
-        //    //$scope.getInitialReviews();
-        //};
-        //$scope.setPopularReviews = function(){
-        //    $scope.oldReviews = false;
-        //    $scope.newReviews = false;
-        //    $scope.popularReviews = true;
-        //};
-        //function setQuery(){
-        //    var query = "?";
-        //    if($scope.oldReviews == true){
-        //        query += "ordering=modified";
-        //    }else if($scope.newReviews==true){
-        //        query += "ordering=-modified";
-        //    }else if($scope.popularReviews==true){
-        //        query += "";
+
+
+        //$scope.$watch('filteredSubjects', function(newVal, oldVal) {
+        //
+        //    function getInitialReviews() {
+        //        for (var i = 0; i < $scope.filteredSubjects.length; i++) {
+        //            (function(i) {
+        //                gridFactory.getReviews("", $scope.filteredSubjects[i].id)
+        //                    .then(function (response) {
+        //                        $scope.filteredSubjects[i].reviews = response.data;
+        //                    });
+        //            })(i);
+        //        }
+        //        //console.log(JSON.stringify($scope.filteredSubjects));
+        //    }
+        //    if (Object.prototype.toString.call($scope.filteredSubjects) === '[object Array]') {
+        //        //alert('Array!');
+        //        if(newVal === oldVal) {
+        //        }else{
+        //            console.log("oldVal" + JSON.stringify(oldVal));
+        //            console.log("newVal" + JSON.stringify(newVal));
+        //            getInitialReviews();
+        //            angular.copy('filteredSubjects', $scope.filteredSubjects);
+        //
+        //            console.log("watch made");
+        //        }
         //    }
         //
-        //    return query;
-        //}
-        //
-        //$scope.getNextReviews = function(){
-        //
-        //};
-
-
-
-        //$scope.updateGrid= function(){
-        //    gridFactory.getAllReviews("", 1)
-        //        .then(function(allReviews)
-        //}
-        $scope.$watch('filteredSubjects', function() {
-            function getInitialReviews() {
-                for (var i = 0; i < $scope.filteredSubjects.length; i++) {
-                    (function(i) {
-                        gridFactory.getReviews("", $scope.filteredSubjects[i].id)
-                            .then(function (response) {
-                                $scope.filteredSubjects[i].reviews = response.data;
-                            });
-                    })(i);
-                }
-                //console.log(JSON.stringify($scope.filteredSubjects));
-            }
-            if (Object.prototype.toString.call($scope.filteredSubjects) === '[object Array]') {
-                //alert('Array!');
-                getInitialReviews();
-            }
-
-        }, true);
+        //}, true);
 
     };
-    gridController.$inject = ['$scope', '$http', 'gridFactory'];
+    gridController.$inject = ['$scope', '$http', 'gridFactory', '$filter'];
     angular.module('mainApp').controller('gridController', gridController)
 }());
 

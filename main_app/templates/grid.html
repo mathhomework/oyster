@@ -1,8 +1,15 @@
 {% extends 'base_template.html' %}
 {% load staticfiles%}
 
+{% block head_top %}
+    <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+
+{% endblock %}
+
 {% block head %}
 <title>Oyster</title>
+    <script src="{% static 'js/ng-infinite-scroll.js' %}"></script>
+
     <script src="{% static 'js/gridController.js' %}"></script>
 {% endblock %}
 
@@ -13,75 +20,47 @@
 {#    {% endfor %}#}
 <div ng-app="mainApp" ng-controller="gridController" class="container">
     <p ng-click="setNewReviews()">New Posts</p>
-    <div class="row">
-    {% verbatim %}
-    <div ng-repeat="subject in (filteredSubjects = (allSubjects | limitTo:4))">
+    <h4>Subjects Ordering</h4>
+    <p ng-click="setRatedSubjects()">Toggle Scoring Subjects</p>
+    <p ng-click="setVotedSubjects()">Toggle Voted Subjects</p>
+    <div class="row" infinite-scroll="infiniteSubjects()" infinite-scroll-distance="0" >
+        {% verbatim %}
+        <div ng-repeat="subject in (filteredSubjects = (allSubjects | orderBy:subjectOrder | limitTo:subjectLimit))" >
+            <div class="col-md-2 subject-card">
+                {{ subject.name }}
+                4.92/5.0
+                293 Votes
+                542 Reviews
+            </div>
+            <div class="col-md-1">
+                left
+            </div>
+            <div class="col-md-8" data-id="{{ subject.id }}" >
+                <div class="scroll-container" scrolly="getCurrentSubjectId({{ subject.id }})">
+                    <div class="scroll-inner" >
+                        <div ng-repeat="review in subject.reviews" class="scroll-review">
+                            <h4>{{ review.title }}</h4>
 
-        <div class="col-md-2 subject-card">
-            {{ subject.name }}
-            4.92/5.0
-            293 Votes
-            542 Reviews
-        </div>
-        <div class="col-md-1">
-            left
-        </div>
-        <div class="col-md-8">
-            <div class="scroll-container">
-                <div class="scroll-inner">
-                    <div ng-repeat="review in subject.reviews" class="scroll-review">
-                        <h4>{{ review.title }}</h4>
+                            <h5>
+                                <a href="#">{{ review.author[0].username }}</a>
+                            </h5>
 
-                        <h5>
-                            <a href="#">{{ review.author[0].username }}</a>
-                        </h5>
+                            <p>{{ review.review }}</p>
+                        </div>
 
-                        <p>{{ review.review }}</p>
                     </div>
-
                 </div>
             </div>
-        </div>
-        <div class="col-md-1">
-            right
-        </div>
-    </div>
-    {% endverbatim %}
+            <div class="col-md-1">
+                right
+            </div>
 
 
-{#        {% for x in "xxxxxx" %}#}
-{##}
-{#        <div class="col-md-2 subject-card">#}
-{#            The Sky#}
-{#            4.92/5.0#}
-{#            293 Votes#}
-{#            542 Reviews#}
-{#        </div>#}
-{#        <div class="col-md-1">#}
-{#            left#}
-{#        </div>#}
-{#        <div class="col-md-8">#}
-{#            <div class="scroll-container">#}
-{#                <div class="scroll-inner">#}
-{#                    <div class="scroll-review">#}
-{#                        Lots of text 1#}
-{#                    </div>#}
-{#                    <div class="scroll-review">#}
-{#                        Lots of text 2#}
-{#                    </div>#}
-{#                    <div class="scroll-review">#}
-{#                        Jowl filet mignon spare ribs chicken bresaola corned beef andouille frankfurter leberkas salami. Drumstick ham porchetta salami pork loin bacon spare ribs flank pig hamburger chuck jowl strip steak boudin. Filet mignon pig doner, andouille jerky bacon swine chicken. Leberkas tenderloin meatball andouille hamburger. Strip steak picanha jowl t-bone.#}
-{#                    </div>#}
-{#                    <div class="scroll-review">#}
-{#                        Bacon ipsum dolor amet swine pork chop beef, ham hock picanha tongue frankfurter doner. Strip steak chuck picanha, shoulder cupim fatback biltong. Leberkas rump fatback, ball tip venison salami boudin. Fatback shankle porchetta beef cow tail short ribs chicken landjaeger. Ham porchetta kevin venison jerky andouille kielbasa shank prosciutto. T-bone pancetta landjaeger brisket alcatra corned beef. Hamburger sirloin ham cupim, pastrami tail shankle.#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#        <div class="col-md-1">#}
-{#            right#}
-{#        </div>#}
-{#        {% endfor %}#}
+        </div>
     </div>
+
+
 </div>
+{% endverbatim %}
+
 {% endblock content %}
