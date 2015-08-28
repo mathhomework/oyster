@@ -82,6 +82,9 @@
         $scope.filteredSubjects = null;
         $scope.allSubjects = [];
         var filteredSubjectsStart = 0;
+        var subjectOffsets = {};
+        var initReviewLimit = "3";
+        var reviewOffset = 2;
         function populateAllSubjects(){
             gridFactory.getAllSubjects()
                 .then(function(subjects){
@@ -92,13 +95,15 @@
                         // ngInfiniteScroll causes 1 scroll which I think adds to subjectLimit
                         for (var i = 0; i < $scope.subjectLimit; i++) {
                             (function(i) {
-                                gridFactory.getReviews($scope.allSubjects[i].id)
+                                gridFactory.getReviews($scope.allSubjects[i].id, "&limit="+initReviewLimit)
                                     .then(function (response) {
-                                        $scope.allSubjects[i].reviews = response.data;
+                                        $scope.allSubjects[i].reviews = response.data.results;
+                                        subjectOffsets[$scope.allSubjects[i].id] = initReviewLimit;
                                     });
                                 filteredSubjectsStart = i;
                             })(i);
                         }
+
                     }
                     getInitialReviews();
                         //$scope.filteredSubjects = $filter('limitTo')($scope.allSubjects, 'subjectLimit');
@@ -109,21 +114,27 @@
                 })
             );
         }
-        $scope.subjectLimit = 4;
+        $scope.subjectLimit = 5;
         //since scroll is triggered once when the page loads, this will be +1,
 
-        $scope.getCurrentSubjectId = function(id){
+        $scope.getMoreReviews = function(id){
             $scope.currentSubjectId = id;
             console.log("curr_id " + id);
-            var query = "";
+            var query = "&limit=2&offset=" + subjectOffsets[id];
             gridFactory.getReviews(id, query)
                 .then(function(response){
                     for(var i = 0; i<$scope.filteredSubjects.length; i++){
                         console.log('looping');
                         if($scope.filteredSubjects[i].id == id){
-                            for(var j = 0; j<response.data.length; j++){
-                                $scope.filteredSubjects[i].reviews.push(response.data[j]);
-                            }
+                            console.log("======ID MATCH=========");
+                            //the concat below is optimal for chrome (10x faster than for loop)
+                            $scope.filteredSubjects[i].reviews = $scope.filteredSubjects[i].reviews.concat(response.data["results"]);
+
+                            //this for loop below is optimal for non chrome browsers
+                            //for(var j = 0; j<response.data["results"].length; j++){
+                            //    $scope.filteredSubjects[i].reviews.push(response.data["results"][j]);
+                            //}
+                            subjectOffsets[id] = (parseInt(subjectOffsets[id], 10) + reviewOffset).toString();
                             break;
                         }
                     }
@@ -134,13 +145,13 @@
 
         var first = true;
         $scope.infiniteSubjects = function() {
+
+
             if(first){
                 first = false;
             }
             else{
                 $scope.subjectLimit += 1;
-                //console.log("filteredss" + filteredSubjectsStart);
-                //console.log("ssL" + $scope.subjectLimit);
                 //subjectLimit-2 is used, which means that after the subject is loaded,
                 // you need to scroll one more click down to load it's review.. since it is actually
                 // loading the previous review to the newly gotten subject.
@@ -148,9 +159,11 @@
                 // but the review is not loaded until you scroll one more click.
                 // i feel like it may be related to this function being triggered upon load one time
                 // which causes subjectLimit to automatically increase by 1.
-                gridFactory.getReviews($scope.filteredSubjects[$scope.subjectLimit-2].id)
+                gridFactory.getReviews($scope.filteredSubjects[$scope.subjectLimit-2].id, "&limit="+initReviewLimit)
                     .then(function(response){
-                        $scope.filteredSubjects[$scope.subjectLimit-2].reviews = response.data;
+                        $scope.filteredSubjects[$scope.subjectLimit-2].reviews = response.data.results;
+                        subjectOffsets[$scope.filteredSubjects[$scope.subjectLimit-1].id] = initReviewLimit;
+
                     });
             }
         };

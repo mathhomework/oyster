@@ -36,16 +36,17 @@
                 left
             </div>
             <div class="col-md-8" data-id="{{ subject.id }}" >
-                <div class="scroll-container" scrolly="getCurrentSubjectId({{ subject.id }})">
+                <div class="scroll-container" scrolly="getMoreReviews({{ subject.id }})">
                     <div class="scroll-inner" >
-                        <div ng-repeat="review in subject.reviews" class="scroll-review">
+                        <div class="review" ng-repeat="review in subject.reviews" class="scroll-review">
                             <h4>{{ review.title }}</h4>
 
                             <h5>
                                 <a href="#">{{ review.author[0].username }}</a>
                             </h5>
-
-                            <p>{{ review.review }}</p>
+                            <expand-review>
+                                <p>{{ review.review }}</p>
+                            </expand-review>
                         </div>
 
                     </div>

@@ -62,19 +62,23 @@
     overflow-y: hidden;
     overflow-x: scroll;
     height:200px;
-
+    white-space:nowrap;
 }
 
 .scroll-inner{
     height:208px;
-    width: 4800px;
-
-
-
+    /*width: 4800px;*/
 }
 
 .scroll-review{
     width: 500px;
     float:left;
+
 }
 
+.review{
+    display: inline-block;
+    vertical-align: top;
+    width:500px;
+    white-space: normal;
+}
